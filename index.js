@@ -58,7 +58,7 @@ async function main() {
         url: lib.listSubmissionsUrl(contestName),
         qs: {
             offset: 0,
-            limit: 20,
+            limit: count.total,
             ' ': Date.now(),
         },
         headers: {

@@ -7,5 +7,6 @@ Requirements:
 
 How to run:
 1. `npm install`
-2. Check your hackerrank cookie header and paste it into the file "cookie"
+2. Check your hackerrank cookie header and paste it into the file "cookie" 
+__Note: Make sure the file is a single line__
 4. `CONTEST=<contest-slug> npm start`
