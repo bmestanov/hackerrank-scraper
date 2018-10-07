@@ -69,7 +69,7 @@ async function main() {
 
     console.log("%d submissions were fetched", response.models.length);
     const eligible = response.models.filter((submission) => {
-        return submission.language === 'cpp' &&
+        return ['cpp', 'cpp14'].includes(submission.language) &&
             submission.in_contest_bounds &&
             submission.kind === 'code' &&
             submission.score > 0;
