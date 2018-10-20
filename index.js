@@ -7,38 +7,36 @@ const sort = require('sort-keys');
 
 const cookieContent = fs.readFileSync('cookie', 'utf8');
 const contestName = process.env.CONTEST || 'practice-1-si';
-const paths = {
-    files: 'files',
-    results: 'results'
-};
 
-const contestPath = path.join(paths.files, contestName);
-const resultsPath = path.join(paths.results, contestName + '.json');
+const contestPath = path.join('files', contestName);
+const resultsPath = path.join('results', contestName + '.json');
+
+const fileExtensions = {
+    cpp: 'cpp',
+    cpp14: 'cpp',
+    csharp: 'cs',
+    java: 'java',
+    java8: 'java',
+    javascript: 'js',
+    python: 'py'
+};
 
 if (!fs.existsSync(contestPath)) {
     fs.mkdirSync(contestPath);
 }
 
-let results;
-try {
-    results = JSON.parse(fs.readFileSync(resultsPath));
-} catch (err) {
-    results = {};
-}
+const results = {};
 
 function updateSubmissionScore(student, submission) {
     const existingScore = get(results, [student, submission.challenge_slug, 'score']);
     const maxScore = existingScore ? Math.max(existingScore, submission.display_score) : submission.display_score;
     set(results, [student, submission.challenge_slug, 'score'], maxScore);
-
-    if (process.env.DETAIL) {
-        set(results, [student, submission.challenge_slug, 'submissions', `submission_${submission.id}`], {
-            language: submission.language,
-            status: submission.status,
-            score: submission.display_score,
-            created_at: submission.created_at_epoch
-        });
-    }
+    set(results, [student, submission.challenge_slug, 'submissions', `submission-${submission.id}`], {
+        language: submission.language,
+        status: submission.status,
+        score: submission.display_score,
+        created_at: submission.created_at_epoch
+    });
 }
 
 async function processSubmission(submissionId) {
@@ -49,13 +47,12 @@ async function processSubmission(submissionId) {
         },
         json: true,
     });
-    
+
     const submission = response.model;
     let student;
 
-    try {
-        student = submission.hacker_username.toLowerCase();
-    } catch (err) {
+    student = submission.hacker_username;
+    if (!student) {
         console.error("Submission %d does not have a hacker username", submissionId);
         return;
     }
@@ -67,7 +64,8 @@ async function processSubmission(submissionId) {
     }
 
     // Save submission code
-    const submissionFile = path.join(studentFolder, `${submission.challenge_slug}-${submissionId}.cpp`);
+    const submissionFile = path.join(studentFolder,
+        `${submission.challenge_slug}-${submissionId}.${fileExtensions[submission.language]}`);
     fs.writeFileSync(submissionFile, submission.code);
 
     // Update results object
@@ -108,9 +106,9 @@ async function main(offset, limit) {
 
     console.log("%d submissions were fetched", response.models.length);
     const eligible = response.models.filter((submission) => {
-        return submission.in_contest_bounds &&
-            submission.kind === 'code' &&
-            (process.env.DETAIL ? submission.score > 0 : true);
+        return Object.keys(fileExtensions).includes(submission.language) &&
+            submission.in_contest_bounds &&
+            submission.kind === 'code'
     })
         .map(submission => submission.id)
 
