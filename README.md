@@ -11,13 +11,29 @@ Given a contest slug and browser cookie, fetches all eligible submissions and ke
 
 __Note: Make sure the file is a single line__
 
-4. `CONTEST=<contest-slug> npm start`
+3. `CONTEST=<contest-slug> npm start`
 
 ## Command line options
+### Main script
+Downloads all submissions code & results in json format
+
+Environment
 * `CONTEST` - contest slug
 * `PARTS` - fetches submissions in multiple iterations
 
 Example
 ```bash
 CONTEST=my-contest PARTS=2 npm start
+```
+
+# json-to-csv
+After downloading contest info, you can transform the results json to a simple csv format.
+
+Environment
+* `CONTEST` - contest slug
+* `TASKS` - task slugs, seperated by a comma
+
+Example
+```bash
+CONTEST=si-practice-2 TASKS=task-1-1-1,task-2-1-2,task-3-1-2,task-4-1-2 node json-to-csv.js
 ```

@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const get = require('lodash/get');
 
-// CONTEST=si-practice-2 TASKS=task-1-1-1,task-2-1-2,task-3-1-2,task-4-1-2
-
 const contestName = process.env.CONTEST || 'practice-1-si';
 
 const tasks = process.env.TASKS.split(',');
