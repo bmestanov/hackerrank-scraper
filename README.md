@@ -31,9 +31,8 @@ After downloading contest info, you can transform the results json to a simple c
 
 Environment
 * `CONTEST` - contest slug
-* `TASKS` - task slugs, seperated by a comma
 
 Example
 ```bash
-CONTEST=si-practice-2 TASKS=task-1-1-1,task-2-1-2,task-3-1-2,task-4-1-2 node json-to-csv.js
+CONTEST=si-practice-2 node json-to-csv.js
 ```
